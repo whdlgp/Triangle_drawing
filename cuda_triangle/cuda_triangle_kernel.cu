@@ -38,6 +38,7 @@ __global__ void draw_triangle(pixel_t *c0, pixel_t *c1, pixel_t *c2, vec2_t *p0,
 {
     int i = blockIdx.x;
     int j = threadIdx.x;
+    int idx = i * WIDTH + j;
     vec2_t p = {(float)j, (float)i};
     bool is_inside;
     point_inside_trigon(p, *p0, *p1, *p2, &is_inside);
@@ -45,14 +46,15 @@ __global__ void draw_triangle(pixel_t *c0, pixel_t *c1, pixel_t *c2, vec2_t *p0,
     {
         pixel_t intp;
         color_interpolation(*c0, *c1, *c2, p, *p0, *p1, *p2, &intp);
-        img[i * WIDTH + j].r = intp.r;
-        img[i * WIDTH + j].g = intp.g;
-        img[i * WIDTH + j].b = intp.b;
+        img[idx].r = intp.r;
+        img[idx].g = intp.g;
+        img[idx].b = intp.b;
     }
     else
     {
-        img[i * WIDTH + j].r = 255 * 0.2;
-        img[i * WIDTH + j].g = 255 * 0.3;
-        img[i * WIDTH + j].b = 255 * 0.3;
+        img[idx].r = 255 * 0.2;
+        img[idx].g = 255 * 0.3;
+        img[idx].b = 255 * 0.3;
     }
+    
 }

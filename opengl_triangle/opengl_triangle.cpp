@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <GL/glx.h>
 #include <iostream>
+#include <chrono>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
@@ -52,6 +53,9 @@ int main()
                         ,0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f
                         ,0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f};
 
+    // time stamp start
+    auto t1 = std::chrono::high_resolution_clock::now();
+
     // Vertex Buffer Object, reference(handle) of created vertex buffer
     // It will be used to contain vertex position
     // Creation
@@ -89,6 +93,12 @@ int main()
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
     char* img = download_output();
+
+    // time stamp end
+    auto t2 = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> exe_time = t2 - t1;
+    std::cout << "execution time : " << exe_time.count() << " ms" << std::endl;
+
     save_output("test.png", WIDTH, HEIGHT, img);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

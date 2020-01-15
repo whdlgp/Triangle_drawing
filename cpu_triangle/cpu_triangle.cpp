@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <chrono>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
@@ -75,6 +76,8 @@ int main()
     pixel_t c1 = {(unsigned char)(0.0 * 255), (unsigned char)(1.0 * 255), (unsigned char)(0.0 * 255)};
     pixel_t c2 = {(unsigned char)(0.0 * 255), (unsigned char)(0.0 * 255), (unsigned char)(1.0 * 255)};
 
+    // time stamp start
+    auto t1 = std::chrono::high_resolution_clock::now();
     // draw
     #pragma omp parallel for collapse(2)
     for(int i = 0; i < HEIGHT; i++)
@@ -98,6 +101,10 @@ int main()
             }
         }
     }
+    // time stamp end
+    auto t2 = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> exe_time = t2 - t1;
+    std::cout << "execution time : " << exe_time.count() << " ms" << std::endl;
 
     stbi_flip_vertically_on_write(1);
     stbi_write_png("test.png", WIDTH, HEIGHT, 3, img, 0);

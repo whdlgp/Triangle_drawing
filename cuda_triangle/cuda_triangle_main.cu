@@ -1,6 +1,9 @@
 #include "cuda_triangle_kernel.h"
 #include "image_writer.hpp"
 
+#include <iostream>
+#include <chrono>
+
 int main()
 {
     // Triangle vertic
@@ -18,6 +21,9 @@ int main()
     pixel_t c1 = {(unsigned char)(0.0 * 255), (unsigned char)(1.0 * 255), (unsigned char)(0.0 * 255)};
     pixel_t c2 = {(unsigned char)(0.0 * 255), (unsigned char)(0.0 * 255), (unsigned char)(1.0 * 255)};
     
+    // time stamp start
+    auto t1 = std::chrono::high_resolution_clock::now();
+
     // device memory
     vec2_t *d_p0, *d_p1, *d_p2;
     pixel_t *d_c0, *d_c1, *d_c2;
@@ -43,6 +49,11 @@ int main()
     cudaDeviceSynchronize();
     cudaMemcpy(img, d_img, WIDTH*HEIGHT*sizeof(pixel_t), cudaMemcpyDeviceToHost);
     
+    // time stamp end
+    auto t2 = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> exe_time = t2 - t1;
+    std::cout << "execution time : " << exe_time.count() << " ms" << std::endl;
+
     write_image("test.png", WIDTH, HEIGHT, img);
 
     return 0;
